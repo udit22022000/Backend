@@ -1,0 +1,1 @@
+mongoimport topics.json -d refreshDb --drop  -c refresh  --jsonArray --drop

@@ -1,0 +1,15 @@
+db.contacts.insertOne({name: "Max", hobbies: ["Cooking","Sports"], addresses:[{street: "Main Street"}, {street: "Second Street"}]})
+
+db.contacts.findOne()
+
+db.contacts.createIndex({hobbies: 1})
+
+db.contacts.find({hobbies:"Sports"}).explain()  // winning plan IXSCAN...multi-key index...array of values..for every element there will be an index..they are typically bigger...
+
+db.contacts.createIndex({addresses : 1})
+
+db.contacts.find({"addresses.street": "Main Street"}).explain() // winning plan COLLSCAN..because indexes holds whole document(address)..not a single field of the document(address) like street...haad it been thw hole address then mongodb would have used IXSCAN...
+
+db.contacts.find({"addresses.street": {street: "Main Street"}}).explain() // winning plan IXSCAN...because here we are searching for a whole document...not a field of that document...
+
+db.contacts.find({"addresses.street": "Main Street"}).explain() // now the winning plan is IXSCAN because we are searching it after using the above query...

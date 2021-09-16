@@ -1,0 +1,26 @@
+NOTE : -- This file contains details about element operators, querying array data and filtering embedded documents...
+
+use user
+db.users.insertMany([{name:"Max", hobbies: [{title: "Sports" , frequency: 3},{title: "cooking" , frequency: 6}],phone: 02937224},
+                    {name: "Manuel",hobbies: [{title: "Cooking" , frequency: 5},{title: "Cars", frequency: 2}, phone: "283283742",age: 30}])
+
+// in the above 2 records that we are entering...phone is of different types in both and age is an extra field in 2nd...
+
+//ELEMENT OPERATORS
+db.users.find({age: {$exists: true}})   // douments which has an age field...if the age has null value, it will also be considered...
+db.users.find({age: {$exists: true, $gte: 30}})  
+db.users.find({phone :{$type: "number"}})
+db.users.find({phone :{$type: "double"}})
+db.users.find({phone :{$type: ["double","string","number"]}}) 
+
+// Querying arrays data.....here we are filtering wrt hobbies and hobbies is an array of documents..
+db.users.insertOne({name:"Chris", hobbies: ["Sports","Cooking","Hiking"]})
+db.users.find({"hobbies.title": "Sports"})
+db.users.find({hobbies : {$size: 3}})
+
+//filtering embedded documents...
+db.users.find({ $and: [ {"hobbies.title": "Sports"}, {"hobbies.frequency" : {$gte : 3 }}]})  //here the documents need not be same...it will fetch documents if it matches either of the conditions..
+db.users.find({hobbies: {$elemMatch: {title: "Sports", frequency: {$gte: 3}} }})   //filtering embedded documents...passing the structure of the document...
+
+
+

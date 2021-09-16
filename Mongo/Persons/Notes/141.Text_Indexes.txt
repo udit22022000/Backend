@@ -1,0 +1,40 @@
+db.products.insertMany([{
+    title: "A Book",
+    description: "THis is an awesome Book about a yoing artist"
+},
+{
+    title: "Red Tshirt",
+    description: "This t shirt is red and it's pretty awesome" 
+}])
+
+db.products.createIndex({desciption: "text"}) // this will create a text index..a special kind of index where MongoDB will remove all the stop words and store the key words in an array essentially...
+
+db.products.find({$text: {$search: "Awesome"}}) // case is not important here...everything is stored in lower case...
+
+db.products.find({$text: {$search: "red book"}}) // will return both the documents...
+
+db.products.find({$text: {$search: "\"awesome book\""}}) // we can search for a phrase...by wrapping it in a double quotes...
+
+db.products.find({$text: {$search: "awesome t-shirt"}},{score: {$meta: "textScore"}}).sort({score: {$meta: "textScore"}}) // to see the search score...and sort on the basis of that score... 
+
+
+db.products.getIndex()
+
+db.products.dropIndex({title: text})
+
+// NOTE :---- we can only have one text index per collection....but then we can merge different field in one text index...
+
+db.products.createIndex({title: "text", description: "text"}) //merging multiple fields...now there will still be one text index but it will contain teh key words from both the fields...
+
+//using text indexes to exclude words...
+
+db.products.find({$text: {$search: "Awesome -t-shirt"}}) //-t-shirt(minus <word_name>) means we are excluding a word..that word should not be considered...
+
+//setting the default language and weights for text index...
+
+db.products.createIndex({title: "text", description: "text"},{deafult_language: "english", weights: {title: 1, desciption: 10}}) //assigning weights to teh fields..it's like priority... 
+
+db.products.find({$text: {$search: "red",$language: "german", $caseSensitive: true}})
+
+db.products.find({$text: {$search: "red"}}, {score: {$meta: "textScore"}}) // score changed because we changed the weights...
+

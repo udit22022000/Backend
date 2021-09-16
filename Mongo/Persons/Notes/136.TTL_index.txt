@@ -1,0 +1,7 @@
+TTL- Time to Leave index ..... works only on date object...
+
+db.sessions.insertOne({data: "ssafbsf", createdAt: new Date()})
+
+db.sessions.find().pretty()
+
+db.sessions.createIndex({createdAt: 1},{expireAfterSeconds:10}) // now all documents will be deleted 10 seconds after the latest document has been added..

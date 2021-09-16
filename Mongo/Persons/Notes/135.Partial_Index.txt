@@ -1,0 +1,16 @@
+// USE OF PARTIAL FILTER EXPRESSION..
+
+db.users.insertMany([{name: "Max",email: "max@test.com"}, {name:"Manu"}])
+
+db.users.createIndex({email:1})
+
+db.users.dropIndex({email:1})
+
+db.users.createIndex({email: 1}, {unique: true})
+
+db.users.insertOne({name: "Anna"}) //now it will throw an error because now email will be null in two cases one for name Manu and another for name Anna...and since we made email an unique index ..there can't be duplicates...
+
+db.users.dropIndex({email:1})
+
+db.users.createIndex({email: 1}, {unique: true, partialFilterExpression: {email: {$exists: true}}})  //now null will not be taken into account...
+

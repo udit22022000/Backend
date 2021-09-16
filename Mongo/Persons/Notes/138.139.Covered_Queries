@@ -1,0 +1,20 @@
+db.customers.insertMany([
+    {name: "Max", age: 29, salary: 3000},
+    {name: "Manu", age: 30, salary: 4000},
+])
+
+db.customers.createIndex({name: 1})
+
+db.customers.find({name: "Max"}).explain(executionStats)  //will be using IXSCAN..here totalDocsExamined will be 1
+
+db.customers.find({name: "Max"},{_id: 0, name: 1}).explain("executionStats")  // here totalDocsExamined will be 0..since index has two things pointer to the document and indexed value...and here indexed value is name and with teh help of that we can directly get the value....this is called covered query because this query is completely convered with an index...
+
+// this covered query thing is not usable everywhere...
+
+//Lecture 139... How MongoDb rejects a plan...
+
+db.customers.createIndex({age: 1, name: 1}) //compound index
+db.customers.find({name: "Max", age: 30}) // here it will use compound index because here name and age are connected using "AND operator"
+
+// How MongoDB decides the plan...which stage to use and which indexing to use ?..../ Refer to the screenshots...
+db.customers.find({name: "Max", age: 30}).explain("AllPlansExecution") // to see the detailed plan of mongoDB.. 
