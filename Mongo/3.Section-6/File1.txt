@@ -1,0 +1,43 @@
+
+//Diving into Create operations....Adding Data to the mongoDB..
+
+1.Playing with Database
+
+- show dbs
+- use test
+- db.dropDatabase() //will delete the current database....
+
+
+2. Creating Documents --- Notes ---
+
+- db.collectionName.insertOne({field: "value"})
+- db.collectionName.insertMany([{field: "value"},{field: "value"}])
+- mongoimport Command ->> mongoimport -d cars -c carsList --drop --jsonArray  //for importing data from a file...
+- example of mongoimport ->> mongoimport topics.json -d refreshDb --drop  -c refresh  --jsonArray --drop
+
+3. Examples
+
+- use contactData
+- db.persons.insertOne({name: "Max", age: 30, hobbies: ["Sports","Cooking"]})
+- db.persons.insertOne({name: "Manuel", age: 20, hobbies: ["Sports","Cooking","Cycling"]})
+- db.persons.insertMany([{name: "Max", age: 30, hobbies: ["Sports","Cooking"]},{name: "Manuel", age: 20, hobbies: ["Sports","Cooking","Cycling"]}])
+
+- Note - Whenever we insert a document, an id of type ObjectId is assigned to the document implicitly by MongoDb...if we want we cam assign an _id ourself also...To see How..go through the beow example..
+- db.persons.insertMany([{_id: "Max", name: "Max", age: 30, hobbies: ["Sports","Cooking"]},{_id: "Manuel",name: "Manuel", age: 20, hobbies: ["Sports","Cooking","Cycling"]}]) //assigning the Id also...
+
+- Note: 1. While assigning the id's manually..make sure that there are no duplicate id's..otherwise it will throw an error...
+        2. While inserting multiple documents using insertMany....if we get an error at any point, our program will stop at that particular momnent and it will not roll back..All the documents which were inserted before getting the error will remain in the collection...
+        3. If we want that it should inserting the rest of the documents after getting an error, we can pass {ordered : false} , to change the default behaviour of the order...
+        4. Example for point 3 - db.persons.insertMany([{name: "Max", age: 30, hobbies: ["Sports","Cooking"]},{name: "Manuel", age: 20, hobbies: ["Sports","Cooking","Cycling"]}],{ordered: false})
+
+
+
+4. Helpful Articles/ Docs:
+
+insertOne(): https://docs.mongodb.com/manual/reference/method/db.collection.insertOne/
+
+insertMany(): https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/
+
+Atomicity: https://docs.mongodb.com/manual/core/write-operations-atomicity/#atomicity
+
+Using mongoimport: https://docs.mongodb.com/manual/reference/program/mongoimport/index.html
